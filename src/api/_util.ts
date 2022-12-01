@@ -1,7 +1,8 @@
-import type { VercelRequest } from '@vercel/node';
+import { Request } from "express";
+
 import type { Readable } from 'node:stream';
 
-export function cleanReq(req: VercelRequest) {
+export function cleanReq(req: Request) {
 	return {
 		method: req.method,
 		url: req.url,
@@ -10,7 +11,7 @@ export function cleanReq(req: VercelRequest) {
 	};
 }
 
-export function toHeaders(headerMap: VercelRequest['headers']): { k: string, v: string }[] {
+export function toHeaders(headerMap: Request['headers']): { k: string, v: string }[] {
 	const rv: { k: string, v: string }[] = [];
 	for (const [header, values] of Object.entries(headerMap)) {
 		const headerLower = header.toLowerCase();
@@ -39,7 +40,7 @@ export function getHeaders(header: string, headers: { k: string, v: string }[], 
 }
 
 /** See: https://vercel.com/support/articles/how-do-i-get-the-raw-body-of-a-serverless-function */
-export async function getRawBody(req: VercelRequest): Promise<string> {
+export async function getRawBody(req: Request): Promise<string> {
 	const buf = await buffer(req);
 	const rawBody = buf.toString('utf8');
 	return rawBody;

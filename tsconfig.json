@@ -9,5 +9,6 @@
         "suppressImplicitAnyIndexErrors": true,
         "target": "ES6",
         "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true
     }
 }

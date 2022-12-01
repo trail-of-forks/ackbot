@@ -1,4 +1,4 @@
-import type { VercelRequest } from '@vercel/node';
+import { Request } from "express";
 import * as crypto from 'crypto';
 import { slack } from './_constants';
 import { getHeader, getRawBody, toHeaders } from './_util';
@@ -7,7 +7,7 @@ import { getHeader, getRawBody, toHeaders } from './_util';
 const DEBUG_LOG_TO_SLACK = false;
 
 /** See: https://api.slack.com/authentication/verifying-requests-from-slack */
-export async function isValidSlackRequest(req: VercelRequest, signingSecret: string, logging = false) {
+export async function isValidSlackRequest(req: Request, signingSecret: string, logging = false) {
 	const headers = toHeaders(req.headers);
 	const requestTimestampSec = Number.parseInt(getHeader('X-Slack-Request-Timestamp', headers, true), 10);
 	const signature = getHeader('X-Slack-Signature', headers, true);

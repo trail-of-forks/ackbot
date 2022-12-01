@@ -1,11 +1,11 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { Request, Response } from "express";
 import { checkMessageAcks } from './_acks';
 import { SLACK_SIGNING_SECRET } from './_constants';
 import { isValidSlackRequest, log } from './_Slack';
 import { AnyEvent, AppMentionEvent, SlackRequest } from './_SlackJson';
 import { cleanReq } from './_util';
 
-export default async function onEvent(req: VercelRequest, res: VercelResponse) {
+export default async function onEvent(req: Request, res: Response) {
 	const body: SlackRequest = req.body;
 
 	if (body.type === 'url_verification') {
