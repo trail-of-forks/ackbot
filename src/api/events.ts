@@ -2,12 +2,12 @@ import { Request, Response } from "express";
 import { checkMessageAcks } from './_acks';
 import { SLACK_SIGNING_SECRET } from './_constants';
 import { isValidSlackRequest, log } from './_Slack';
-import { AnyEvent, AppMentionEvent, SlackRequest } from './_SlackJson';
+import { AnyEvent, SlackRequest } from './_SlackJson';
 import { cleanReq } from './_util';
+import { AppMentionEvent } from "@slack/bolt";
 
 export default async function onEvent(req: Request, res: Response) {
 	const body: SlackRequest = req.body;
-
 	if (body.type === 'url_verification') {
 		res.status(200).send({
 			challenge: body.challenge,
@@ -42,7 +42,7 @@ export default async function onEvent(req: Request, res: Response) {
 	}
 }
 
-async function onAppMention(event: AppMentionEvent): Promise<{ response: unknown, code: number }> {
+export async function onAppMention(event: AppMentionEvent): Promise<{ response: unknown, code: number }> {
 	await checkMessageAcks(event.channel, event.ts);
 
 	return { code: 200, response: {} };

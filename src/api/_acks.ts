@@ -55,7 +55,13 @@ async function saveReminders(reminders: { channel: string, ts: string }[]): Prom
 	const score = new Date().getTime();
 	const adds = reminders.map(r => ({ score, member: `${r.channel}:${r.ts}` }));
 	const first = adds.shift();
-	await redis.zadd(REDIS_ACK_KEY, first, ...adds); // dirty hack because these typings are disgusting
+	await redis.zadd("sortedSet", 1, "one", 2, "dos", 4, "quatro", 3, "three");
+
+	await redis.zadd(
+		REDIS_ACK_KEY,
+		first,
+		...adds
+	); // dirty hack because these typings are disgusting
 }
 
 export async function checkMessageAcks(channel: string, ts: string, saveReminder = true): Promise<{ isComplete: boolean }> {
