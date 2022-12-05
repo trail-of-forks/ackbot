@@ -1,18 +1,16 @@
 import express, { Request, Response } from "express";
-import onEvent from "./events";
+import onCheck from "./check";
 import { onAppMention } from "./events";
-import {
-	App,
-	LogLevel,
-	subtype,
-	BotMessageEvent,
-	BlockAction,
-} from "@slack/bolt";
+import { App, ExpressReceiver, LogLevel } from "@slack/bolt";
+
+// Create a Bolt Receiver
+const receiver = new ExpressReceiver({ signingSecret: process.env.SLACK_SIGNING_SECRET });
 
 const app = new App({
 	token: process.env.SLACK_BOT_TOKEN,
 	signingSecret: process.env.SLACK_SIGNING_SECRET,
 	logLevel: LogLevel.INFO,
+	receiver,
 	customRoutes: [
 		{
 			path: "/healthz",
@@ -33,6 +31,10 @@ app.event("app_mention", async ({ event, logger }) => {
 	let code = 400;
 	({ response, code } = await onAppMention(event));
 	logger.info(response);
+});
+
+receiver.router.get('/check-reminers', async ( req, res ) => {
+	res.status(200).send(await onCheck(req, res));
 });
 
 void (async () => {
