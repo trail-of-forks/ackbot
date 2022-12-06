@@ -2,13 +2,11 @@ import { slack, redis } from './_constants';
 import { log } from './_Slack';
 import { Block } from './_SlackJson';
 import { map } from './_util';
-import { DEBUG } from './_constants';
+import { DEBUG, REMINDER_FREQUENCY_MIN } from './_constants';
 
 const DEFAULT_CONCURRENCY = 3;
 
 const REDIS_ACK_KEY = 'acks';
-
-const REMINDER_FREQUENCY_MIN = 24 * 60;
 
 const REMINDER_FREQUENCY_MS = REMINDER_FREQUENCY_MIN * 60 * 1000;
 

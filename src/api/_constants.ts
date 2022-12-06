@@ -2,9 +2,8 @@ import { Redis } from '@upstash/redis/with-fetch';
 import { WebClient } from '@slack/web-api';
 
 export const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
-
-export const ACKBOT_VERIFY = process.env.ACKBOT_VERIFY;
-
+export const ACKBOT_CHECK_TOKEN = process.env.ACKBOT_CHECK_TOKEN;
+export const REMINDER_FREQUENCY_MIN = Number(process.env.REMINDER_FREQUENCY_MIN) || 24 * 60;
 export const DEBUG = process.env.DEBUG;
 
 export const redis = new Redis({

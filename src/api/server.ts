@@ -1,9 +1,7 @@
-import express, { Request, Response } from "express";
 import onCheck from "./check";
 import { onAppMention } from "./events";
 import { App, ExpressReceiver, LogLevel } from "@slack/bolt";
 
-// Create a Bolt Receiver
 const receiver = new ExpressReceiver({ signingSecret: process.env.SLACK_SIGNING_SECRET });
 
 const app = new App({
