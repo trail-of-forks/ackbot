@@ -14,5 +14,5 @@ jobs:
     steps:
     - name: Check Reminders
       run: |
-        curl -H "x-ackbot-verify: ${{ secrets.ACKBOT_CHECK_TOKEN }}" \
+        curl --silent -H "x-ackbot-verify: ${{ secrets.ACKBOT_CHECK_TOKEN }}" \
           ${{ secrets.ACKBOT_CHECK_ENDPOINT }}
