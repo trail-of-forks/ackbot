@@ -4,18 +4,18 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   schedule:
-  # * is a special character in YAML so you have to quote this string
-  # “At minute 0 past every 4th hour.”
-  - cron:  '0 */4 * * *'
+    # * is a special character in YAML so you have to quote this string
+    # “At minute 0 past every 4th hour.”
+    - cron: "0 */4 * * *"
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-    - name: Check Reminders
-      run: |
-        curl --silent -H "x-ackbot-verify: ${ACKBOT_CHECK_TOKEN}" \
-          ${ACKBOT_CHECK_ENDPOINT} >> /dev/null
-      env:
-        ACKBOT_CHECK_TOKEN: ${{ secrets.ACKBOT_CHECK_TOKEN }}
-        ACKBOT_CHECK_ENDPOINT: ${{ secrets.ACKBOT_CHECK_ENDPOINT }} 
+      - name: Check Reminders
+        run: |
+          curl --silent -H "x-ackbot-verify: ${ACKBOT_CHECK_TOKEN}" \
+            ${ACKBOT_CHECK_ENDPOINT} >> /dev/null
+        env:
+          ACKBOT_CHECK_TOKEN: ${{ secrets.ACKBOT_CHECK_TOKEN }}
+          ACKBOT_CHECK_ENDPOINT: ${{ secrets.ACKBOT_CHECK_ENDPOINT }}
