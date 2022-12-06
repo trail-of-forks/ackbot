@@ -2,6 +2,7 @@ import { slack, redis } from './_constants';
 import { log } from './_Slack';
 import { Block } from './_SlackJson';
 import { map } from './_util';
+import { DEBUG } from './_constants';
 
 const DEFAULT_CONCURRENCY = 3;
 
@@ -11,14 +12,13 @@ const REMINDER_FREQUENCY_MIN = 24 * 60;
 
 const REMINDER_FREQUENCY_MS = REMINDER_FREQUENCY_MIN * 60 * 1000;
 
-const DEBUG_CHECK_ALL = false;
 
 export async function checkForReminders() {
 	const now = new Date().getTime();
-	const upperBound = DEBUG_CHECK_ALL ? '+inf' : now - REMINDER_FREQUENCY_MS;
+	const upperBound = DEBUG ? '+inf' : now - REMINDER_FREQUENCY_MS;
 	console.log('checkForReminders started: ', { now, upperBound });
 
-	const vals = await redis.zrange(REDIS_ACK_KEY, '-inf', upperBound, 'BYSCORE') as string[];
+	const vals = await redis.zrange(REDIS_ACK_KEY, '-inf', upperBound, { byScore: true }) as string[];
 	console.log('checkForReminders got reminders: ', { now, vals });
 
 	const complete: { channel: string, ts: string }[] = [];
@@ -54,13 +54,8 @@ export async function checkForReminders() {
 async function saveReminders(reminders: { channel: string, ts: string }[]): Promise<void> {
 	const score = new Date().getTime();
 	const adds = reminders.map(r => ({ score, member: `${r.channel}:${r.ts}` }));
-	const remindersRecords = adds.reduce((score, member) => {
-		return [...score, 0, member];
-	}, []);
-	await redis.zadd(
-		REDIS_ACK_KEY,
-		...remindersRecords
-	);
+	const first = adds.shift();
+	await redis.zadd(REDIS_ACK_KEY, first, ...adds); // dirty hack because these typings are disgusting
 }
 
 export async function checkMessageAcks(channel: string, ts: string, saveReminder = true): Promise<{ isComplete: boolean }> {
